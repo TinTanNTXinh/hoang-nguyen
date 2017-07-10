@@ -1,6 +1,10 @@
-# HOANG NGUYEN PROJECT
+# HOANG NGUYEN PROJECT (Laravel 5.4 & Angular 4)
 
-# Laravel 5.4 & Angular 4
+# [Mô tả logic dự án](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaLogicHoangNguyen.md) 
+
+# [Mô tả cách tổ chức code dự án](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaCodeHoangNguyen.md)
+
+# RUN & DEPLOY PROJECT
 ============================
 ## Required
 
@@ -13,16 +17,16 @@
 -----------------------------------
 ## Official Documentation
 
-- 1. config .env
-- 2. create database
-- 3. composer install
-- 4. cd public/dev: npm install
-- 5. cd public/dev/src: typings install (optional)
-- 6. cd public/dev: npm run dev
-- 7. php artisan serve
-- 8. Access: http://localhost:8000
-- 9. Build prod: npm run prod (optional)
-- 10. Build prod: npm run go (optional) (to run outside on 0.0.0.0:4200)
+- config .env
+- create database
+- composer install
+- cd public/dev: npm install
+- cd public/dev/src: typings install (optional)
+- cd public/dev: npm run dev
+- php artisan serve
+- Access: http://localhost:8000
+- Build prod: npm run prod (optional)
+- Build prod: npm run go (optional) (to run outside on 0.0.0.0:4200)
 
 -----------------------------------
 ## Tutorial Angular
