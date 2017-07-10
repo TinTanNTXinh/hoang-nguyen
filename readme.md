@@ -9,16 +9,16 @@
 ## Required
 
 - Server:
-+ php >= 7x
-+ composer >= 1x
-+ mysql
+ + php >= 7x
+ + composer >= 1x
+ + mysql
 - Client:
-+ nodejs >= 6x
-+ npm >= 4x
+ + nodejs >= 6x
+ + npm >= 4x
 
 - IDE:
-+ PhpStorm (Recommended)
-+ ...
+ + PhpStorm (Recommended)
+ + ...
 -----------------------------------
 ## Run & deploy
 
