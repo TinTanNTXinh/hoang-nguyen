@@ -31,12 +31,12 @@ class AdminFilesTableSeeder extends Seeder
                 'mime_type'    => 'image/jpeg',
                 'path'         => 'assets/img/a'.$key.'.jpg',
                 'size'         => 0,
+                'table_name'   => 'users',
+                'table_id'     => ++$key,
                 'note'         => '',
                 'created_date' => date('Y-m-d H:i:s'),
                 'updated_date' => null,
-                'active'       => true,
-                'table_name'   => 'users',
-                'table_id'     => ++$key
+                'active'       => true
             ]);
         }
     }
