@@ -8,14 +8,19 @@
 ============================
 ## Required
 
-- php >= 7x
-- composer >= 1x
-- nodejs >= 6x
-- npm >= 4x
-- mysql
+- Server:
++ php >= 7x
++ composer >= 1x
++ mysql
+- Client:
++ nodejs >= 6x
++ npm >= 4x
 
+- IDE:
++ PhpStorm (Recommended)
++ ...
 -----------------------------------
-## Official Documentation
+## Run & deploy
 
 - config .env
 - create database
@@ -25,11 +30,9 @@
 - cd public/dev: npm run dev
 - php artisan serve
 - Access: http://localhost:8000
-- Build prod: npm run prod (optional)
-- Build prod: npm run go (optional) (to run outside on 0.0.0.0:4200)
 
 -----------------------------------
-## Tutorial Angular
+## Angular Documentation
 
 - Create component:            ng g c components/component-name
 - Create component (plain):    ng g c components/component-name -is --spec false
@@ -44,7 +47,7 @@
 ## Developer
 
 - [Skype](ntxinh.tintansoft)
-- [Gmail](ntxinh@tintansoft.com).
+- [Gmail](ntxinh@tintansoft.com)
 -----------------------------------
 ## License
 
