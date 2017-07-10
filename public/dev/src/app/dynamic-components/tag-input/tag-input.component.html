@@ -1,0 +1,16 @@
+<tag-input-item
+    *ngFor="let tag of value; let i = index"
+    [text]="tag"
+    [index]="i"
+    [selected]="selectedTag === i"
+    (tagRemoved)="_removeTag($event)">
+</tag-input-item>
+<input
+    class="ng2-tag-input-field"
+    type="text"
+    [placeholder]="placeholder"
+    [(ngModel)]="inputValue"
+    (paste)="inputPaste($event)"
+    (keydown)="inputChanged($event)"
+    (blur)="inputBlurred($event)"
+    (focus)="inputFocused()">

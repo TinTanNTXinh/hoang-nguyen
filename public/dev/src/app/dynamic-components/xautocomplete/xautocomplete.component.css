@@ -1,0 +1,11 @@
+#list-group {
+    position: absolute;
+    z-index: 3;
+    overflow: auto;
+    height: 200px;
+}
+
+.readonly-div {
+    pointer-events: none;
+    /*opacity: 0.8;*/
+}
