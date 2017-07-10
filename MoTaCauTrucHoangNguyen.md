@@ -1,4 +1,5 @@
-# MÔ TẢ CODE DỰ ÁN QUẢN LÝ VẬN TẢI - HOÀNG NGUYỄN
+# MÔ TẢ CẤU TRÚC DỰ ÁN
+# QUẢN LÝ VẬN TẢI - HOÀNG NGUYỄN
 
 ## Giới thiệu
 - Dự án được phát triển dự trên công nghệ Laravel 5.4 và Angular 4
