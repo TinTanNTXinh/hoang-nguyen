@@ -119,7 +119,8 @@ namespace App{
  * @property int $product_id
  * @property int $customer_id
  * @property int $postage_id
- * @property int $fuel_id Mã giá dầu nếu trong công thức có giá dầu
+ * @property string $type
+ * @property int $fuel_id Mã Dầu/Nhớt nếu trong công thức có giá Dầu/Nhớt
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereActive($value)
@@ -155,6 +156,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereRevenue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereTransportDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereTruckId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereType1($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereType2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transport whereType3($value)
@@ -288,10 +290,10 @@ namespace App{
  * App\FuelCustomer
  *
  * @property int $id
+ * @property string $type
  * @property int $fuel_id
  * @property int $customer_id
  * @property float $price Giá dầu làm mốc của khách hàng
- * @property string $type
  * @property string $apply_date
  * @property string|null $note Ghi chú
  * @property int $created_by Người tạo
@@ -1085,6 +1087,7 @@ namespace App{
  * @property int $active Kích hoạt
  * @property int $customer_id
  * @property int $unit_id
+ * @property string $type
  * @property int $fuel_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -1100,6 +1103,7 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Postage whereFuelId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Postage whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Postage whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Postage whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Postage whereUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Postage whereUnitPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Postage whereUpdatedAt($value)
