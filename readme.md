@@ -1,10 +1,10 @@
 # HOANG NGUYEN PROJECT (Laravel 5.4 & Angular 4)
 
-# [Mô tả logic dự án](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaLogicHoangNguyen.md) 
+# 1. [MÔ TẢ LOGIC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaLogicHoangNguyen.md) 
 
-# [Mô tả cách tổ chức code dự án](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaCodeHoangNguyen.md)
+# 2. [MÔ TẢ CẤU TRÚC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaCodeHoangNguyen.md)
 
-# RUN & DEPLOY PROJECT
+# 3. RUN & DEPLOY PROJECT
 ============================
 ## Required
 
@@ -40,11 +40,11 @@
 - Run outside Angular:         ng serve --host 0.0.0.0
 - Run outside Laravel:         php artisan serve --host=0.0.0.0 --port=8000
 
-Contact with me via [Facebook](http://facebook.com/nguyentrucxjnh), [Skype](ntxinh.tintansoft), [Gmail](ntxinh@tintansoft.com).
 -----------------------------------
 ## Developer
 
-
+- [Skype](ntxinh.tintansoft)
+- [Gmail](ntxinh@tintansoft.com).
 -----------------------------------
 ## License
 
