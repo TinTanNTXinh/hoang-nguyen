@@ -1,0 +1,331 @@
+<!-- content -->
+<div id="content" class="app-content" role="main">
+  <div class="app-content-body ">
+    <div class="bg-light lter b-b wrapper-md">
+      <app-title [title]="title"></app-title>
+    </div>
+    <div class="wrapper-md">
+      <div class="row">
+        <div class="col-sm-12">
+          <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home"><i
+                class="glyphicon glyphicon-th-list icon text-primary-lter"></i> Tất cả</a></li>
+            <li><a data-toggle="tab" href="#menu2"><i
+                class="glyphicon glyphicon-edit icon text-success-lter"></i> Thêm/Cập nhật</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div id="home" class="tab-pane fade in active">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold">
+                      <a data-toggle="collapse" href="#search"><u>Điều kiện lọc</u></a>
+                    </div>
+                    <div id="search" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                        <form class="bs-example form-horizontal">
+                          <div class="row">
+                            <div class="col-md-2">
+                              <div class="radio" *ngFor="let rd of range_date">
+                                <label class="i-checks">
+                                  <input type="radio" name="range_date" [value]="rd.value"
+                                         (change)="filtering.range = rd.value">
+                                  <i></i>
+                                  {{rd.name}}
+                                </label>
+                              </div>
+                            </div>
+                            <div class="col-md-10">
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <label>Từ</label>
+                                  <datetime [ngModel]="datepicker_from" name="datepicker_from"
+                                            (dateChange)="clearDate($event, 'from')"
+                                            (ngModelChange)="handleDateFromChange($event)" [timepicker]="false"
+                                            [datepicker]="datepickerSettings"></datetime>
+                                </div>
+                                <div class="col-md-3">
+                                  <label>Đến</label>
+                                  <datetime [(ngModel)]="datepicker_to" name="datepicker_to"
+                                            (dateChange)="clearDate($event, 'to')"
+                                            [timepicker]="false"
+                                            [datepicker]="datepickerToOpts"></datetime>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <label>Tên</label>
+                                  <xautocomplete [(value)]="filtering.driver_id"
+                                                 [data]="drivers_search"
+                                                 [name]="'fullname'">
+                                  </xautocomplete>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-4">
+                              <button class="btn m-b-xs w-xs btn-info btn-rounded"
+                                      type="button"
+                                      (click)="search()">Tìm kiếm
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold">
+                      Danh sách {{title}}
+                    </div>
+                    <div class="panel-body">
+                      <spinner-fb [isLoading]="isLoading"></spinner-fb>
+                      <xdatatable [body]="drivers" [header]="header"
+                                  (onClicked)="actionCrud($event)"></xdatatable>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div role="tabpanel" id="menu2" class="tab-pane fade">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold">Thêm/Cập nhật {{title}}</div>
+                    <div class="panel-body">
+                      <form class="bs-example form-horizontal">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Họ tên</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="driver.fullname" name="fullname">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Ngày sinh</label>
+                              <div class="col-lg-10">
+                                <datetime [ngModel]="birthday" name="birthday"
+                                          [timepicker]="false"
+                                          [datepicker]="datepickerSettings">
+                                </datetime>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Giới tính</label>
+                              <div class="col-lg-10">
+                                <select [(ngModel)]="driver.sex" name="sex" class="form-control">
+                                  <option value="Nam" selected>Nam</option>
+                                  <option value="Nữ">Nữ</option>
+                                  <option value="Khác">Khác</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Số điện thoại</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="driver.phone" name="phone">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">CMND</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="driver.so_chung_minh" name="so_chung_minh">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Ngày cấp CMND</label>
+                              <div class="col-lg-10">
+                                <datetime [ngModel]="ngay_cap_chung_minh" name="ngay_cap_chung_minh"
+                                          [timepicker]="false"
+                                          [datepicker]="datepickerSettings">
+                                </datetime>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Địa chỉ thường trú</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="driver.dia_chi_thuong_tru" name="dia_chi_thuong_tru">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Địa chỉ tạm trú</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="driver.dia_chi_tam_tru" name="dia_chi_tam_tru">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Ngày vào làm</label>
+                              <div class="col-lg-10">
+                                <datetime [ngModel]="start_date" name="start_date"
+                                          [timepicker]="false"
+                                          [datepicker]="datepickerSettings">
+                                </datetime>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Ngày thôi việc</label>
+                              <div class="col-lg-10">
+                                <datetime [ngModel]="finish_date" name="finish_date"
+                                          [timepicker]="false"
+                                          [datepicker]="datepickerSettings">
+                                </datetime>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Loại bằng lái</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="driver.loai_bang_lai" name="loai_bang_lai">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Số bằng lái</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="driver.so_bang_lai" name="so_bang_lai">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Ngày cấp bằng lái</label>
+                              <div class="col-lg-10">
+                                <datetime [ngModel]="ngay_cap_bang_lai" name="ngay_cap_bang_lai"
+                                          [timepicker]="false"
+                                          [datepicker]="datepickerSettings">
+                                </datetime>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Ngày hết hạn bằng lái</label>
+                              <div class="col-lg-10">
+                                <datetime [ngModel]="ngay_het_han_bang_lai" name="ngay_het_han_bang_lai"
+                                          [timepicker]="false"
+                                          [datepicker]="datepickerSettings">
+                                </datetime>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Ghi chú</label>
+                              <div class="col-lg-10">
+                                <textarea [(ngModel)]="driver.note" name="note" cols="30" rows="3"
+                                          class="form-control"></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="panel panel-success">
+                              <div class="panel-heading">
+                                <a data-toggle="collapse" href="#file"><u>Tập tin</u></a>
+                              </div>
+                              <div id="file" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="panel wrapper">
+                                        <div class="row">
+                                          <div class="col-md-6 b-r b-light no-border-xs">
+
+                                            <a id="download-file" [href]="download_url" style="display: none;"></a>
+
+                                            <div class="input-group">
+                                              <label class="input-group-btn">
+                                                <span class="btn btn-dark">
+                                                    Chọn tập tin&hellip; <input #file (change)="refreshFiles()" multiple type="file" style="display: none;">
+                                                </span>
+                                              </label>
+                                              <input type="text" class="form-control" readonly value="Đã chọn {{getFileList().length}} tập tin">
+                                            </div>
+
+                                            <br>
+                                            <span id="refresh-files" class="text-muted pull-right text-lg"><i class="icon-refresh"></i></span>
+                                            <h3 class="font-thin m-t-none m-b-md text-muted">Tập tin đã chọn</h3>
+                                            <div class="m-b">
+                                              <div class="m-b" *ngFor="let file of getFileList()">
+                                                <span class="label text-base bg-info pos-rlt m-r"><i class="arrow right arrow-info"></i> <i class="fa fa-file" aria-hidden="true"></i></span>
+                                                <span>{{file.name}}</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <h3 class="font-thin m-t-none m-b-md text-muted">Tập tin đã lưu</h3>
+                                            <xdatatable [body]="files_of_driver"
+                                                        [header]="header_file"
+                                                        [action]="action_data_file"
+                                                        (onClicked)="actionCrudFile($event)"
+                                                        (onSelectedRow)="selectedRowFile($event)">
+                                            </xdatatable>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="form-group">
+                              <div class="col-lg-offset-2 col-lg-10">
+                                <button *ngIf="!isEdit" type="button"
+                                        class="btn m-b-xs w-xs btn-primary btn-rounded"
+                                        (click)="addOne()">Thêm
+                                </button>
+                                <button *ngIf="isEdit" type="button"
+                                        class="btn m-b-xs w-xs btn-warning btn-rounded"
+                                        (click)="updateOne()">Cập nhật
+                                </button>
+                                <button *ngIf="isEdit" type="button"
+                                        class="btn m-b-xs btn-rounded btn-default btn-addon"
+                                        (click)="displayEditBtn(false)"><i
+                                    class="fa fa-ban"></i>Hủy
+                                </button>
+                                <button *ngIf="!isEdit" type="button"
+                                        class="btn m-b-xs btn-rounded btn-default btn-addon"
+                                        (click)="clearOne()"><i
+                                    class="fa fa-eraser"></i>Làm mới
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <modal [objectData]="modal" (onClicked)="confirmDeactivateOne($event)"></modal>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /content -->
+
+
+

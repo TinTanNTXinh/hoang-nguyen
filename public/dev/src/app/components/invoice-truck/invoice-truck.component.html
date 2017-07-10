@@ -1,0 +1,420 @@
+<!-- content -->
+<div id="content" class="app-content" role="main">
+  <div class="app-content-body ">
+    <div class="bg-light lter b-b wrapper-md">
+      <app-title [title]="title"></app-title>
+    </div>
+    <div class="wrapper-md">
+      <div class="row">
+        <div class="col-sm-12">
+          <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home"><i
+                class="glyphicon glyphicon-th-list icon text-primary-lter"></i> Tất cả</a></li>
+            <li><a data-toggle="tab" href="#menu2"><i
+                class="glyphicon glyphicon-edit icon text-success-lter"></i> Thêm/Cập nhật</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div id="home" class="tab-pane fade in active">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold">
+                      <a data-toggle="collapse" href="#search"><u>Điều kiện lọc</u></a>
+                    </div>
+                    <div id="search" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                        <form class="bs-example form-horizontal">
+                          <div class="row">
+                            <div class="col-md-2">
+                              <div class="radio" *ngFor="let rd of range_date">
+                                <label class="i-checks">
+                                  <input type="radio" name="range_date" [value]="rd.value"
+                                         (change)="filtering.range = rd.value">
+                                  <i></i>
+                                  {{rd.name}}
+                                </label>
+                              </div>
+                            </div>
+                            <div class="col-md-10">
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <label>Từ</label>
+                                  <datetime [ngModel]="datepicker_from" name="datepicker_from"
+                                            (dateChange)="clearDate($event, 'from')"
+                                            (ngModelChange)="handleDateFromChange($event)" [timepicker]="false"
+                                            [datepicker]="datepickerSettings"></datetime>
+                                </div>
+                                <div class="col-md-3">
+                                  <label>Đến</label>
+                                  <datetime [(ngModel)]="datepicker_to" name="datepicker_to"
+                                            (dateChange)="clearDate($event, 'to')"
+                                            [timepicker]="false"
+                                            [datepicker]="datepickerToOpts"></datetime>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <label>Xe</label>
+                                  <xautocomplete [(value)]="filtering.truck_id"
+                                                 [data]="trucks"
+                                                 [name]="'area_code_number_plate'">
+                                  </xautocomplete>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-4">
+                              <button class="btn m-b-xs w-xs btn-info btn-rounded"
+                                      type="button"
+                                      (click)="search()">Tìm kiếm
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold">
+                      Danh sách {{title}}
+                    </div>
+                    <div class="panel-body">
+                      <spinner-fb [isLoading]="isLoading"></spinner-fb>
+                      <xdatatable [body]="invoice_trucks"
+                                  [header]="header"
+                                  (onClicked)="actionCrud($event)">
+                      </xdatatable>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div role="tabpanel" id="menu2" class="tab-pane fade">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold">
+                      <a data-toggle="collapse" href="#list-transport"><u>Danh sách Đơn hàng</u></a>
+                    </div>
+                    <div id="list-transport" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                        <spinner-fb [isLoading]="isLoading"></spinner-fb>
+                        <master-detail [setup]="setup_master_detail"
+                                       [header_master]="header_master"
+                                       [header_detail]="header_detail"
+                                       [master]="trucks"
+                                       [(detail)]="transports"
+                                       [settingClassDetail]="'highlight'"
+                                       [action_detail]="action_detail"
+                                       (onClickedDetail)="addInvoice($event)">
+                        </master-detail>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold">Thêm/Cập nhật {{title}}</div>
+                    <div class="panel-body">
+                      <form class="bs-example form-horizontal">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label>Xe</label>
+                                <xautocomplete [data]="trucks"
+                                               [name]="'area_code_number_plate'"
+                                               [model_name]="'id'"
+                                               [(value)]="invoice_truck.truck_id"
+                                               [readonly]="true">
+                                </xautocomplete>
+                              </div>
+                              <div class="col-md-6">
+                                <label>Tổng giao xe</label>
+                                <currency [numberData]="invoice_truck.total_delivery"
+                                          [readonly]="true"
+                                          [ngModel]="invoice_truck.total_delivery" name="total_delivery">
+                                </currency>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label>Tổng chi phí <i>(Bốc xếp, Neo đêm, Công an, Phí tăng bo, Thêm điểm)</i></label>
+                                <currency [numberData]="invoice_truck.total_cost_in_transport"
+                                          [readonly]="true"
+                                          [ngModel]="invoice_truck.total_cost_in_transport"
+                                          name="total_cost_in_transport">
+                                </currency>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label>Tổng chi phí <i>(Dầu, Nhớt, Đậu bãi, Khác)</i></label>
+                                <currency [numberData]="invoice_truck.total_cost"
+                                          [readonly]="true"
+                                          [ngModel]="invoice_truck.total_cost" name="total_cost">
+                                </currency>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label>Tiền xuất</label>
+                                <currency [numberData]="invoice_truck.total_pay"
+                                          [ngModel]="invoice_truck.total_pay" name="total_pay"
+                                          [readonly]="true">
+                                </currency>
+                              </div>
+                              <div class="col-md-6">
+                                <label>Tổng đã trả</label>
+                                <currency [numberData]="invoice_truck.total_paid"
+                                          [ngModel]="invoice_truck.total_paid" name="total_paid"
+                                          [readonly]="true">
+                                </currency>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label>Tiền trả</label>
+                                <currency [numberData]="invoice_truck.paid_amt"
+                                          [(ngModel)]="invoice_truck.paid_amt" name="paid_amt">
+                                </currency>
+                              </div>
+                            </div>
+
+                          </div>
+                          <div class="col-md-6">
+                            <div class="col-md-6">
+                              <label>Ngày hóa đơn</label>
+                              <datetime [(ngModel)]="invoice_date" name="invoice_date"
+                                        [timepicker]="false"
+                                        [datepicker]="datepickerSettings">
+                              </datetime>
+                            </div>
+                            <div class="col-md-6">
+                              <label>Ngày thanh toán</label>
+                              <datetime [(ngModel)]="payment_date" name="payment_date"
+                                        [timepicker]="false"
+                                        [datepicker]="datepickerSettings">
+                              </datetime>
+                            </div>
+
+                            <br>
+
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label>Người nhận</label>
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="invoice_truck.receiver" name="receiver">
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label>Ghi chú</label>
+                                <textarea [(ngModel)]="invoice_truck.note" name="note" cols="30" rows="3"
+                                          class="form-control"></textarea>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="panel panel-success">
+                              <div class="panel-heading">
+                                <a data-toggle="collapse" href="#file"><u>Tập tin</u></a>
+                              </div>
+                              <div id="file" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="panel wrapper">
+                                        <div class="row">
+                                          <div class="col-md-6 b-r b-light no-border-xs">
+
+                                            <a id="download-file" [href]="download_url" style="display: none;"></a>
+
+                                            <div class="input-group">
+                                              <label class="input-group-btn">
+                                                <span class="btn btn-dark">
+                                                    Chọn tập tin&hellip; <input #file (change)="refreshFiles()" multiple type="file" style="display: none;">
+                                                </span>
+                                              </label>
+                                              <input type="text" class="form-control" readonly value="Đã chọn {{getFileList().length}} tập tin">
+                                            </div>
+
+                                            <br>
+                                            <span id="refresh-files" class="text-muted pull-right text-lg"><i class="icon-refresh"></i></span>
+                                            <h3 class="font-thin m-t-none m-b-md text-muted">Tập tin đã chọn</h3>
+                                            <div class="m-b">
+                                              <div class="m-b" *ngFor="let file of getFileList()">
+                                                <span class="label text-base bg-info pos-rlt m-r"><i class="arrow right arrow-info"></i> <i class="fa fa-file" aria-hidden="true"></i></span>
+                                                <span>{{file.name}}</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <h3 class="font-thin m-t-none m-b-md text-muted">Tập tin đã lưu</h3>
+                                            <xdatatable [body]="files_of_invoice"
+                                                        [header]="header_file"
+                                                        [action]="action_data_file"
+                                                        (onClicked)="actionCrudFile($event)"
+                                                        (onSelectedRow)="selectedRowFile($event)">
+                                            </xdatatable>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="form-group">
+                              <div class="col-lg-offset-2 col-lg-10">
+                                <button *ngIf="!isEdit" type="button"
+                                        class="btn m-b-xs w-xs btn-primary btn-rounded"
+                                        (click)="addOne()">Thêm
+                                </button>
+                                <button *ngIf="isEdit" type="button"
+                                        class="btn m-b-xs w-xs btn-warning btn-rounded"
+                                        (click)="updateOne()">Cập nhật
+                                </button>
+                                <button *ngIf="isEdit" type="button"
+                                        class="btn m-b-xs btn-rounded btn-default btn-addon"
+                                        (click)="displayEditBtn(false)"><i
+                                    class="fa fa-ban"></i>Hủy
+                                </button>
+                                <button *ngIf="!isEdit" type="button"
+                                        class="btn m-b-xs btn-rounded btn-default btn-addon"
+                                        (click)="clearOne()"><i
+                                    class="fa fa-eraser"></i>Làm mới
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <modal [objectData]="modal" (onClicked)="confirmDeactivateOne($event)"></modal>
+        </div>
+      </div>
+      <!-- Cập nhật chi phí -->
+      <div class="row">
+        <div class="col-sm-12">
+          <div id="modal-edit-cost-in-transport" class="modal fade" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">
+                    <i class="fa fa-times-circle" aria-hidden="true"></i>
+                  </button>
+                  <h3 class="modal-title">Cập nhật chi phí</h3>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-lg-2 control-label">Bốc xếp</label>
+                        <div class="col-lg-10">
+                          <currency [numberData]="transport.carrying_real"
+                                    [(ngModel)]="transport.carrying_real" name="carrying_real">
+                          </currency>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-lg-2 control-label">Neo đêm</label>
+                        <div class="col-lg-10">
+                          <currency [numberData]="transport.parking_real"
+                                    [(ngModel)]="transport.parking_real" name="parking_real">
+                          </currency>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-lg-2 control-label">Công an</label>
+                        <div class="col-lg-10">
+                          <currency [numberData]="transport.fine_real"
+                                    [(ngModel)]="transport.fine_real" name="fine_real">
+                          </currency>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-lg-2 control-label">Phí tăng bo</label>
+                        <div class="col-lg-10">
+                          <currency [numberData]="transport.phi_tang_bo_real"
+                                    [(ngModel)]="transport.phi_tang_bo_real" name="phi_tang_bo_real">
+                          </currency>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-lg-2 control-label">Thêm điểm</label>
+                        <div class="col-lg-10">
+                          <currency [numberData]="transport.add_score_real"
+                                    [(ngModel)]="transport.add_score_real" name="add_score_real">
+                          </currency>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary btn-addon" (click)="updateCostInTransport()">
+                    <i class="fa fa-floppy-o"></i>
+                    Lưu
+                  </button>
+                  <button class="btn btn-default" data-dismiss="modal">Đóng</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- \\ Cập nhật chi phí -->
+    </div>
+  </div>
+</div>
+<!-- /content -->
+
+
+

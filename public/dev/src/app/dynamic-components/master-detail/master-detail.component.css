@@ -1,0 +1,15 @@
+.table tbody tr.active-dark td {
+    background-color: #3a3f51;
+    border-color: #3a3f51;
+    color:#eeeeee;
+}
+
+tr td .table tbody tr.active td {
+    background-color:#123456 !important;
+    color: white;
+}
+
+tr td .table tbody tr.highlight td {
+    background-color: #550055;
+    color:#eeeeee;
+}

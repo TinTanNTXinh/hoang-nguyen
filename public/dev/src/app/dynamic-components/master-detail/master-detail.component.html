@@ -1,0 +1,111 @@
+<div class="row">
+  <div class="col-sm-12">
+    <ng-container *ngFor="let key of action_detail | ObjNgFor">
+      <button [class]="action_detail[key]['btn_class']"
+              (click)="clickedDetail(key)"
+              *ngIf="action_detail[key]['visible']">
+        <i [class]="action_detail[key]['icon']"></i>
+        {{action_detail[key]['caption']}}
+      </button>
+    </ng-container>
+    <button class="btn m-b-xs btn-sm btn-info btn-addon" (click)="changeSettingClassDetail()" *ngIf="false">
+      <i class="fa fa-refresh"></i>Chọn
+    </button>
+    <div class="pull-right">
+      <ng-container *ngFor="let key of action_master | ObjNgFor">
+        <button [class]="action_master[key]['btn_class']"
+                (click)="clickedMaster(key)"
+                *ngIf="action_master[key]['visible']">
+          <i [class]="action_master[key]['icon']"></i>
+          {{action_master[key]['caption']}}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<div class="table-responsive">
+  <table *ngIf="master" class="table table-striped b-t b-b">
+    <thead>
+    <tr>
+      <th></th>
+      <th>#
+        <i [hidden]="!isAsc" (click)="sortIndexMaster('DESC')" class="fa fa-sort-desc"></i>
+        <i [hidden]="isAsc" (click)="sortIndexMaster('ASC')" class="fa fa-sort-asc"></i>
+      </th>
+      <ng-container *ngFor="let key of header_master | ObjNgFor">
+        <th *ngIf="visible(key)">
+          {{header_master[key]['title']}}
+          <i class="fa fa-sort-desc" *ngIf="header_master[key].isDesc"
+             (click)="sortPropNameMaster(header_master[key]['data_type'], 'DESC', key)"></i>
+          <i class="fa fa-sort-asc" *ngIf="header_master[key].isAsc"
+             (click)="sortPropNameMaster(header_master[key]['data_type'], 'ASC', key)"></i>
+        </th>
+      </ng-container>
+    </tr>
+    </thead>
+    <tbody *ngFor="let master of pagedItems; let i = index">
+    <tr (click)="setClickedRowMaster(i)" [class.active-dark]="activeRowMaster(i)">
+      <td>
+        <button (click)=showDetail(master.id) class="btn btn-rounded btn-sm btn-icon btn-default">
+          <i class="fa fa-chevron-down text" *ngIf="dropdownRow!=master.id"></i>
+          <i class="fa fa-chevron-up text" *ngIf="dropdownRow==master.id"></i>
+        </button>
+      </td>
+      <td>{{i + 1}}</td>
+      <ng-container *ngFor="let key of header_master | ObjNgFor">
+        <td *ngIf="visible(key)" [innerHTML]="master[key] | safeHtml"></td>
+      </ng-container>
+    </tr>
+    <tr *ngIf="dropdownRow==master.id">
+      <td colspan="6">
+        <div class="table-responsive">
+          <table *ngIf="detail" class="table table-striped b-t b-b">
+            <thead>
+            <tr>
+              <th style="width: 10%">
+                <span class="label label-default">Chi tiết</span>
+              </th>
+              <th *ngFor="let key of header_detail | ObjNgFor">
+                {{header_detail[key]['title']}}
+                <i class="fa fa-sort-desc" *ngIf="header_detail[key].isDesc"
+                   (click)="sortPropNameDetail(header_detail[key]['data_type'], 'DESC', key)"></i>
+                <i class="fa fa-sort-asc" *ngIf="header_detail[key].isAsc"
+                   (click)="sortPropNameDetail(header_detail[key]['data_type'], 'ASC', key)"></i>
+              </th>
+            </tr>
+            </thead>
+            <tbody *ngFor="let dt of detail; let ii = index">
+            <tr class="success" (click)="setClickedRowDetail(ii)"
+                [class.active]="activeRowDetail(ii)"
+                [class.highlight]="highlightRowDetail(ii)">
+              <td></td>
+              <td *ngFor="let key1 of header_detail | ObjNgFor" [innerHTML]="dt[key1] | safeHtml"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="text-right">
+  <!-- Pager -->
+  <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+    <li [ngClass]="{disabled:pager.currentPage === 1}">
+      <a (click)="setPage(1)">Đầu</a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === 1}">
+      <a (click)="setPage(pager.currentPage - 1)">Trước</a>
+    </li>
+    <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+      <a (click)="setPage(page)">{{page}}</a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+      <a (click)="setPage(pager.currentPage + 1)">Sau</a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+      <a (click)="setPage(pager.totalPages)">Cuối</a>
+    </li>
+  </ul>
+</div>
