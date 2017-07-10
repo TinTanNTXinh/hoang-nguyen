@@ -2,7 +2,7 @@
 
 # 1. [MÔ TẢ LOGIC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaLogicHoangNguyen.md) 
 
-# 2. [MÔ TẢ CẤU TRÚC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaCodeHoangNguyen.md)
+# 2. [MÔ TẢ CẤU TRÚC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/MoTaCauTrucHoangNguyen.md)
 
 # 3. RUN & DEPLOY PROJECT
 ============================
