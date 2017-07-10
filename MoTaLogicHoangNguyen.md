@@ -9,10 +9,10 @@
 ## 2. Xe - Truck:
 
 - Trạng thái: Do người quản lý tự điều chỉnh. Gồm:
-+ Chưa phân tài
-+ Đang giao hàng
-+ Đã giao hàng
-+ Không giao được.
+  + Chưa phân tài
+  + Đang giao hàng
+  + Đã giao hàng
+  + Không giao được.
 
 - Có thể xem lịch sử phân tài.
 - Xe dù không có tài xế, vẫn có thể sử dụng để tạo đơn hàng, chi phí như bình thường.
@@ -25,17 +25,17 @@
 - Gồm 2 loại: Công ty, Cá nhân.
 - Có thể thêm nhân viên cho khách hàng.
 - Số phần trăm để tạo cước phí mới khi giá dầu thay đổi (cột limit_oil). 
-+ Hoặc có thể hiểu như "Số phần trăm khi giá dầu đạt mức này, sẽ tạo cước phí mới"
-+ (Ví dụ là 10%: Giá dầu hiện tại 10k, khi giá dầu tăng lên 11k tức là 10% thì tạo công thức mới)
-+ (Cột này mục đích để xác định khi nào tạo cước phí mới. Không dùng để tính cước phí mới)
+  + Hoặc có thể hiểu như "Số phần trăm khi giá dầu đạt mức này, sẽ tạo cước phí mới"
+  + (Ví dụ là 10%: Giá dầu hiện tại 10k, khi giá dầu tăng lên 11k tức là 10% thì tạo công thức mới)
+  + (Cột này mục đích để xác định khi nào tạo cước phí mới. Không dùng để tính cước phí mới)
 
 - Số phần trăm giá dầu/cước phí (cột oil_per_postage):
-+ (Cột này mục đích để tính cước phí mới)
-+ [Công thức: Cước phí mới = Cước phí cũ + (Cước phí cũ * abs(Số phần trăm tăng hoặc giảm giá dầu lần này so với lần trước) * Số phần trăm nhiên liệu/cước phí trong bảng khách hàng / 10000)]
+  + (Cột này mục đích để tính cước phí mới)
+  + [Công thức: Cước phí mới = Cước phí cũ + (Cước phí cũ * abs(Số phần trăm tăng hoặc giảm giá dầu lần này so với lần trước) * Số phần trăm nhiên liệu/cước phí trong bảng khách hàng / 10000)]
 
 - Ngày áp dụng (cột apply_date):
-+ Nếu gía dầu thay đổi phù hợp để tạo cước phí mới, và ngày tạo giá dầu nằm sau ngày áp dụng thì mới được tạo cước phí mới
-+ Tóm lại: Điều kiện để tạo cước phí mới là:
+  + Nếu gía dầu thay đổi phù hợp để tạo cước phí mới, và ngày tạo giá dầu nằm sau ngày áp dụng thì mới được tạo cước phí mới
+  + Tóm lại: Điều kiện để tạo cước phí mới là:
 ```
     % quy định trong Khách hàng <= hoặc >= Số phần trăm tăng hoặc giảm giá dầu lần này so với lần trước
     Ngày tạo giá dầu nằm sau ngày áp dụng trong bảng khách hàng
@@ -53,21 +53,21 @@
 ## 6. Chi phí - Cost:
 - Số tiền mà xe này phát sinh trong khoảng thời gian nào đó.
 - Đậu bãi:
-+ Định giá đậu bãi cho từng loại xe. (3h là 1 ngày, hơn 3h là 2 ngày)
-+ Mặc định:
+  + Định giá đậu bãi cho từng loại xe. (3h là 1 ngày, hơn 3h là 2 ngày)
+  + Mặc định:
 ```
         Xe 5 tấn = 30k/1 ngày
         Xe 8 tấn = 40k/1 ngày
         Xe container = 50k/1 ngày
 ```
-+ Chi phí đậu bãi = Số ngày đậu * đơn giá.
+  + Chi phí đậu bãi = Số ngày đậu * đơn giá.
 
 - Dầu, nhớt: Mặc định giảm 3%, Ví dụ: 10k/1 lít còn 9,727k/1 lít.
 
 ## 7. Đơn hàng- Transport:
 - Doanh thu = (Số lượng hàng * Đơn giá) + (Bốc xếp, Neo đêm, Công an, Đậu bãi, Thêm điểm)
 - Nếu Đơn vị tính là Vnd/Chuyến:
-+ Doanh thu = Đơn giá + (Bốc xếp, Neo đêm, Công an, Đậu bãi, Thêm điểm)
+  + Doanh thu = Đơn giá + (Bốc xếp, Neo đêm, Công an, Đậu bãi, Thêm điểm)
 
 - Giao xe = % Giao xe * (Số lượng hàng * Đơn giá(K bat buoc neu la Vnd/Chuyến)) / 100
   ```hoặc```
@@ -107,9 +107,9 @@ Tiền xuất PTT = Tổng tiền giao xe của các đơn hàng
 
 ## Ghi chú
 - NGÀY ÁP DỤNG, GIỜ ÁP DỤNG: Có ở các bảng:
-+ Khách hàng.
-+ Giá dầu, Giá nhớt.
-+ Cước phí.
+  + Khách hàng.
+  + Giá dầu, Giá nhớt.
+  + Cước phí.
 
 -> Được so sánh với bảng Transport cột transport_date.
 
