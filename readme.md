@@ -1,49 +1,29 @@
-# HOANG NGUYEN SERVER
+# HOANG NGUYEN PROJECT
 
 # Laravel 5.4 & Angular 4
 ============================
-## Require
+## Required
 
-### NodeJS >= 6.9.5
-### NPM >= 4.1.2
-### @angular/cli
-### typescript (optional)
-### typings (optional)
-### rxjs (optional)
-### ember-cli (optional)
-### grunt-cli (optional)
-### gulp (optional)
-### webpack (optional)
+- php >= 7x
+- composer >= 1x
+- nodejs >= 6x
+- npm >= 4x
+- mysql
 
 -----------------------------------
 ## Official Documentation
 
-### 1. config .env
-### 2. create database
-### 3. composer install
-### 4. cd public/dev: npm install
-### 5. cd public/dev/src: typings install (optional)
-### 6. cd public/dev: npm run dev
-### 7. php artisan serve
-### 8. Access: http://localhost:8000
-### 9. Build prod: npm run prod (optional)
-### 10. Build prod: npm run go (optional) (to run outside on 0.0.0.0:4200)
+- 1. config .env
+- 2. create database
+- 3. composer install
+- 4. cd public/dev: npm install
+- 5. cd public/dev/src: typings install (optional)
+- 6. cd public/dev: npm run dev
+- 7. php artisan serve
+- 8. Access: http://localhost:8000
+- 9. Build prod: npm run prod (optional)
+- 10. Build prod: npm run go (optional) (to run outside on 0.0.0.0:4200)
 
-### cd public/dev: bower install (optional)
------------------------------------
-## Insert Location to DB
-
-### METHOD 1:
-### mysql -u root -p
-### use vsys;
-### source /home/xinhnguyen/Documents/GitHub/TinTanSoft_VSYS/documents/Cities.sql;
-### source /home/xinhnguyen/Documents/GitHub/TinTanSoft_VSYS/documents/Districts.sql;
-### source /home/xinhnguyen/Documents/GitHub/TinTanSoft_VSYS/documents/Wards.sql;
-
-### METHOD 2:
-### mysql -u root -p vsys < documents/Cities.sql
-### mysql -u root -p vsys < documents/Districts.sql
-### mysql -u root -p vsys < documents/Wards.sql
 -----------------------------------
 ## Tutorial Angular
 
