@@ -6,6 +6,8 @@ use App\Services\AuthServiceInterface;
 use App\Services\CustomerServiceInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\CustomerTypeRepositoryInterface;
+use App\Repositories\FuelCustomerRepositoryInterface;
+use App\Repositories\OilRepositoryInterface;
 use App\Common\Helpers\DateTimeHelper;
 use App\Common\Helpers\FilterHelper;
 use DB;
@@ -16,15 +18,19 @@ class CustomerService implements CustomerServiceInterface
     private $user;
     private $table_name;
 
-    protected $authService, $customerRepo, $customerTypeRepo;
+    protected $authService, $customerRepo, $customerTypeRepo, $fuelCustomerRepo, $oilRepo;
 
     public function __construct(AuthServiceInterface $authService
         , CustomerRepositoryInterface $customerRepo
-        , CustomerTypeRepositoryInterface $customerTypeRepo)
+        , CustomerTypeRepositoryInterface $customerTypeRepo
+        , FuelCustomerRepositoryInterface $fuelCustomerRepo
+        , OilRepositoryInterface $oilRepo)
     {
         $this->authService      = $authService;
         $this->customerRepo     = $customerRepo;
         $this->customerTypeRepo = $customerTypeRepo;
+        $this->fuelCustomerRepo = $fuelCustomerRepo;
+        $this->oilRepo          = $oilRepo;
 
         $jwt_data = $this->authService->getCurrentUser();
         if ($jwt_data['status']) {
@@ -93,6 +99,30 @@ class CustomerService implements CustomerServiceInterface
             $one = $this->customerRepo->createOne($i_one);
 
             if (!$one) {
+                DB::rollback();
+                return $result;
+            }
+
+            // Insert Fuel Customer
+            $oil = $this->oilRepo->findOneActiveByApplyDate();
+
+            $i_fuel_customer = [
+                'type'         => 'OIL',
+                'fuel_id'      => $oil->id,
+                'customer_id'  => $one->id,
+                'price'        => $oil->price,
+                'apply_date'   => $oil->apply_date,
+                'note'         => '',
+                'created_by'   => $one->created_by,
+                'updated_by'   => 0,
+                'created_date' => $one->created_date,
+                'updated_date' => null,
+                'active'       => true
+            ];
+
+            $fuel_customer = $this->fuelCustomerRepo->createOne($i_fuel_customer);
+
+            if (!$fuel_customer) {
                 DB::rollback();
                 return $result;
             }
@@ -170,6 +200,9 @@ class CustomerService implements CustomerServiceInterface
                 return $result;
             }
 
+            // Deactivate Fuel Customer
+            $this->fuelCustomerRepo->deactivateByCustomerId($one->id);
+
             DB::commit();
             $result['status'] = true;
             return $result;
@@ -194,6 +227,9 @@ class CustomerService implements CustomerServiceInterface
                 DB::rollback();
                 return $result;
             }
+
+            // Delete Fuel Customer
+            $this->fuelCustomerRepo->deleteByCustomerId($one->id);
 
             DB::commit();
             $result['status'] = true;

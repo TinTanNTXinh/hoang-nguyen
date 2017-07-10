@@ -14,4 +14,19 @@ class FuelCustomerEloquentRepository extends BaseEloquentRepository implements F
     }
 
     /* ===== PUBLIC FUNCTION ===== */
+    public function deleteByCustomerId($customer_id)
+    {
+        return $this->getModel()
+            ->whereActive(true)
+            ->where('customer_id', $customer_id)
+            ->delete();
+    }
+
+    public function deactivateByCustomerId($customer_id)
+    {
+        return $this->getModel()
+            ->whereActive(true)
+            ->where('customer_id', $customer_id)
+            ->update(['active' => false]);
+    }
 }
