@@ -5,7 +5,10 @@
 # 2. [MÔ TẢ CẤU TRÚC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/documents/DOC_MoTaCauTruc.md)
 
 # 3. [RUN & DEPLOY PROJECT](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/documents/DOC_RunAndDeploy.md)
-============================
+
+-----------------------------------
+## Entity Relationship Diagram
+![ERD](https://raw.githubusercontent.com/TinTanNTXinh/hoang-nguyen/master/documents/ERD.jpg)
 
 -----------------------------------
 ## Developer
