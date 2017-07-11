@@ -44,3 +44,9 @@
   + models                    : (Chưa sử dụng) Kiểu dữ liệu cho object
   + pipes                     : Tùy chỉnh kiểu hiện thị dữ liệu khi hiển thị trong HTML
   + services                  : Xử lý Http, Authentication và Chứa các class helpers giúp xử lý dữ liệu mảng, tiền, ngày giờ, tập tin, ...
+
+## 4. Work flow Client-Server:
+```
+Client      ->      Routes      ->      Controller      ->      Service     -> Repository       ->      Model       ->      Database 
+(Angular)           (api.php)                                                                                   (Eloquent)  (MySQL)       
+```
