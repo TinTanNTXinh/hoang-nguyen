@@ -1,7 +1,7 @@
-# MÔ TẢ CẤU TRÚC DỰ ÁN
-# QUẢN LÝ VẬN TẢI - HOÀNG NGUYỄN
+# MÔ TẢ CẤU TRÚC
+# DỰ ÁN QUẢN LÝ VẬN TẢI - HOÀNG NGUYỄN
 
-## Giới thiệu
+## 1. Giới thiệu
 - Dự án được phát triển dự trên công nghệ Laravel 5.4 và Angular 4
 - Các Design Pattern sử dụng trong dự án:
   + Laravel: Json Web Token, Repository, Dependency Injection (Service Container được Laravel cung cấp sẵn)
@@ -9,7 +9,7 @@
 
 - Đọc file readme.md để biết cách run và deploy dự án.
 
-## Cấu trúc phía server Laravel
+## 2. Cấu trúc phía server Laravel
 - Dựa trên cấu trúc có sẵn của framework và phát triển thêm 3 tầng là: Common, Repository và Service
 
 - Common: Gồm:
@@ -34,7 +34,7 @@
 - Class AppServiceProvider chỉ dẫn các denpendency trong hàm register().
 - Các tầng chỉ giao tiếp với nhau thông qua interface, không giao tiếp qua class implement.
 
-## Cấu trúc phía client Angular:
+## 3. Cấu trúc phía client Angular:
 - Dùng Observer để kiểm tra đăng nhập.
 - Source code chứa trong public/dev, gồm:
 
