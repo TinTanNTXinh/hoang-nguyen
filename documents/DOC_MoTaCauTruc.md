@@ -2,9 +2,9 @@
 # DỰ ÁN QUẢN LÝ VẬN TẢI - HOÀNG NGUYỄN
 
 ## 1. Giới thiệu
-- Dự án được phát triển dự trên công nghệ Laravel 5.4 và Angular 4
+- Dự án được phát triển dựa trên công nghệ Laravel 5.4 và Angular 4
 - Các Design Pattern sử dụng trong dự án:
-  + Laravel: Json Web Token, Repository, Dependency Injection (Service Container được Laravel cung cấp sẵn)
+  + Laravel: Json Web Token (JWT), Repository, Dependency Injection (Service Container được Laravel cung cấp sẵn)
   + Angular: Observer
 
 ## 2. Cấu trúc phía server Laravel
@@ -47,6 +47,6 @@
 
 ## 4. Work flow Client-Server:
 ```
-Client      ->      Routes      ->      Controller      ->      Service     -> Repository       ->      Model       ->      Database 
-(Angular)           (api.php)                                                                                   (Eloquent)  (MySQL)       
+Client      ->      Routes      ->      Controller      ->      Service     ->      Repository       ->      Model       ->      Database 
+(Angular)           (api.php)                                                                                       (Eloquent)   (MySQL)       
 ```

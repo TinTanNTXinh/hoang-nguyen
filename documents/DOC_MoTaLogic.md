@@ -32,7 +32,14 @@
 
 - Số phần trăm giá dầu/cước phí (cột oil_per_postage):
   + (Cột này mục đích để tính cước phí mới)
-  + [Công thức: Cước phí mới = Cước phí cũ + (Cước phí cũ * abs(Số phần trăm tăng hoặc giảm giá dầu lần này so với lần trước) * Số phần trăm nhiên liệu/cước phí trong bảng khách hàng / 10000)]
+  + Công thức: 
+```
+    Cước phí mới = Cước phí cũ 
+                    + (Cước phí cũ 
+                    * abs(Số phần trăm tăng hoặc giảm giá dầu lần này so với lần trước) 
+                    * Số phần trăm nhiên liệu/cước phí trong bảng khách hàng 
+                    / 10000)
+```
 
 - Ngày áp dụng (cột apply_date):
   + Nếu gía dầu thay đổi phù hợp để tạo cước phí mới, và ngày tạo giá dầu nằm sau ngày áp dụng thì mới được tạo cước phí mới
