@@ -8,8 +8,7 @@
 
 -----------------------------------
 ## Entity Relationship Diagram
-![ERD](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/documents/ERD.jpg)
-![alt text](https://github.com/nguyenpham95/bom_management_software/blob/master/captures/2.png)
+![alt text](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/documents/ERD.jpg)
 
 -----------------------------------
 ## Developer
