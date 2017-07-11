@@ -34,6 +34,14 @@ export class ToastrHelperService {
         }
     }
 
+    public showToastrUseFormRequest(errors: any): void {
+        for (let prop in errors) {
+            for (let error of errors[prop]) {
+                this.showToastr('error', error);
+            }
+        }
+    }
+
     private configJQToastr() {
         toastr.options = {
             "closeButton": true,

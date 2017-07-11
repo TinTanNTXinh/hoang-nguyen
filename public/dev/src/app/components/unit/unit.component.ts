@@ -135,9 +135,7 @@ export class UnitComponent implements OnInit
                 this.toastrHelperService.showToastr('success', 'Thêm thành công!');
             },
             (error: any) => {
-                for (let err of error.json()['msg']) {
-                    this.toastrHelperService.showToastr('error', err);
-                }
+                this.toastrHelperService.showToastrErrors(error.json());
             }
         );
     }
@@ -153,9 +151,7 @@ export class UnitComponent implements OnInit
                 this.toastrHelperService.showToastr('success', 'Cập nhật thành công!');
             },
             (error: any) => {
-                for (let err of error.json()['msg']) {
-                    this.toastrHelperService.showToastr('error', err);
-                }
+                this.toastrHelperService.showToastrErrors(error.json());
             }
         );
     }
@@ -169,7 +165,7 @@ export class UnitComponent implements OnInit
                 this.domHelperService.toggleModal('modal-confirm');
             },
             (error: any) => {
-                this.toastrHelperService.showToastr('error');
+                this.toastrHelperService.showToastrErrors(error.json());
             }
         );
     }
@@ -181,7 +177,7 @@ export class UnitComponent implements OnInit
                 this.toastrHelperService.showToastr('success', 'Xóa thành công!');
             },
             (error: any) => {
-                this.toastrHelperService.showToastr('error');
+                this.toastrHelperService.showToastrErrors(error.json());
             }
         );
     }
