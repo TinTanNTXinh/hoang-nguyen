@@ -1,6 +1,6 @@
 # HOANG NGUYEN PROJECT (Laravel 5.4 & Angular 4)
 
-# 1. [MÔ TẢ LOGIC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/DOC_MoTaLogic.md) 
+# 1. [MÔ TẢ LOGIC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/documents/DOC_MoTaLogic.md) 
 
 # 2. [MÔ TẢ CẤU TRÚC DỰ ÁN](https://github.com/TinTanNTXinh/hoang-nguyen/blob/master/documents/DOC_MoTaCauTruc.md)
 
