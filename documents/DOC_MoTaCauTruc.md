@@ -7,8 +7,6 @@
   + Laravel: Json Web Token, Repository, Dependency Injection (Service Container được Laravel cung cấp sẵn)
   + Angular: Observer
 
-- Đọc file readme.md để biết cách run và deploy dự án.
-
 ## 2. Cấu trúc phía server Laravel
 - Dựa trên cấu trúc có sẵn của framework và phát triển thêm 3 tầng là: Common, Repository và Service
 
