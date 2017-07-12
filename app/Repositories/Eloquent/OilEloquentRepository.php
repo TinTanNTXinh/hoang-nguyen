@@ -44,4 +44,18 @@ class OilEloquentRepository extends BaseEloquentRepository implements OilReposit
 
         return $oil;
     }
+
+    public function findAllActiveByApplyDate($operator, $i_apply_date = null)
+    {
+        if (!isset($i_apply_date))
+            $i_apply_date = DateTimeHelper::addTimeForDate(date('Y-m-d'), 'max');
+
+        $oils = $this->getModel()
+            ->whereActive(true)
+            ->where('type', 'OIL')
+            ->where('apply_date', $operator, $i_apply_date)
+            ->get();
+
+        return $oils;
+    }
 }

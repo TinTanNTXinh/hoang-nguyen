@@ -98,113 +98,12 @@ class OilService implements OilServiceInterface
                 return $result;
             }
 
-            $fuel_customers = $this->fuelCustomerRepo->findAllActive()->where('type', 'OIL')->values();
-            foreach ($fuel_customers as $fuel_customer) {
-                # Find Customer
-                $customer = $this->customerRepo->findOneActive($fuel_customer->customer_id);
-
-                # Nếu i_apply_date > KH.finish_date -> Bỏ qua
-                $compare = DateTimeHelper::compareDateTime($data['apply_date'], DateTimeHelper::$clientFormatDateTime, $customer->finish_date, 'Y-m-d H:i:s');
-                if ($compare == -1) continue;
-
-                # Find current Fuel of Customer
-                $current_oil_of_customer = $this->oilRepo->findOneActive($fuel_customer->fuel_id);
-
-                # Compute change_percent
-                $change_percent = ($one->price - $current_oil_of_customer->price) / ($current_oil_of_customer->price * 100);
-
-                # Nếu KH không vượt qua limit_oil -> bỏ qua
-                if ($customer->limit_oil / 100 > abs($change_percent) * 100) continue;
-                $postages = $this->postageRepo->findAllActiveByFieldName('customer_id', $customer->id);
-
-                # Nếu KH chưa có cước phí -> bỏ qua
-                if ($postages->count() == 0) continue;
-
-                # Nếu cước phí chưa được cập nhật apply_date -> Báo lỗi
-                $check_null = $postages->where('apply_date', null);
-                if ($check_null->count() > 0) {
-                    array_push($result['errors'], 'Tồn tại cước phí chưa cập nhật ngày áp dụng.');
-                    DB::rollback();
-                    return $result;
-                }
-
-                # Lấy cước phí theo ngày áp dụng giá dầu
-                $max_date = $postages->where('apply_date', '<=', $one->apply_date)->max('apply_date');
-                $postages = $postages->where('apply_date', $max_date);
-                foreach ($postages as $postage) {
-                    $formulas = $this->formulaRepo->findAllActiveByFieldName('postage_id', $postage->id);
-
-                    # Nếu trong công thức có Giá dầu -> bỏ qua
-                    $check_oil = $formulas->where('rule', 'OIL');
-                    if (count($check_oil) > 0) continue;
-
-                    # Insert Postage (apply_date = null)
-                    $unit_price = $postage->unit_price * abs($change_percent) * $customer->limit_oil / 10000;
-                    if ($change_percent > 0) {
-                        $unit_price = $postage->unit_price + $unit_price;
-                        $word       = 'Tăng';
-                    } else {
-                        $unit_price = $postage->unit_price - $unit_price;
-                        $word       = 'Giảm';
-                    }
-                    $i_postage   = [
-                        'code'             => $this->postageRepo->generateCode('POSTAGE'),
-                        'unit_price'       => $unit_price,
-                        'delivery_percent' => $postage->delivery_percent,
-                        'apply_date'       => null,
-                        'change_by_fuel'   => true,
-                        'note'             => "$word cước vận chuyển và giao xe do giá dầu $word từ " . number_format($current_oil_of_customer->price) . " đến " . number_format($one->price),
-                        'created_by'       => $one->created_by,
-                        'updated_by'       => 0,
-                        'created_date'     => $one->created_date,
-                        'updated_date'     => null,
-                        'active'           => true,
-                        'customer_id'      => $customer->id,
-                        'unit_id'          => $postage->unit_id,
-                        'type'             => 'OIL',
-                        'fuel_id'          => $one->id
-                    ];
-                    $postage_new = $this->postageRepo->createOne($i_postage);
-
-                    # Insert Formulas
-                    foreach ($formulas as $key => $formula) {
-
-                        $i_formula = [
-                            'code'         => $this->formulaRepo->generateCode('FORMULA'),
-                            'rule'         => $formula->rule,
-                            'name'         => $formula->name,
-                            'value1'       => $formula->value1,
-                            'value2'       => $formula->value2,
-                            'index'        => ++$key,
-                            'created_by'   => $one->created_by,
-                            'updated_by'   => 0,
-                            'created_date' => $one->created_date,
-                            'updated_date' => null,
-                            'active'       => true,
-                            'postage_id'   => $postage_new->id
-                        ];
-                        $this->formulaRepo->createOne($i_formula);
-
-                    } // END FOREACH Formula
-
-                } // END FOREACH Postage
-                # Deactivation Fuel Customer
-                $this->fuelCustomerRepo->deactivateOne($fuel_customer->id);
-
-                # Insert Fuel Customer
-                $i_fuel_customer = [
-                    'type'         => 'OIL',
-                    'fuel_id'      => $one->id,
-                    'customer_id'  => $customer->id,
-                    'created_by'   => $one->created_by,
-                    'updated_by'   => 0,
-                    'created_date' => $one->created_date,
-                    'updated_date' => null,
-                    'active'       => true
-                ];
-                $this->fuelCustomerRepo->createOne($i_fuel_customer);
-
-            } // END FOREACH Fuel Customer
+            # Insert Postage, Formula, FuelCustomer
+            $flag = $this->addPostageByOil($one);
+            if (!$flag) {
+                DB::rollBack();
+                return $result;
+            }
 
             DB::commit();
             $result['status'] = true;
@@ -389,6 +288,121 @@ class OilService implements OilServiceInterface
         return [
             'oil' => $oil
         ];
+    }
+
+    /**
+     * @param $oil \App\Fuel
+     * @return boolean
+     */
+    private function addPostageByOil($oil)
+    {
+        $fuel_customers = $this->fuelCustomerRepo->findAllActive()->where('type', 'OIL')->values();
+        foreach ($fuel_customers as $fuel_customer) {
+            # Find Customer
+            $customer = $this->customerRepo->findOneActive($fuel_customer->customer_id);
+
+            # Nếu i_apply_date > KH.finish_date -> Bỏ qua
+            $compare = DateTimeHelper::compareDateTime($oil->apply_date, 'Y-m-d H:i:s', $customer->finish_date, 'Y-m-d H:i:s');
+            if ($compare == -1) continue;
+
+            # Find current Fuel of Customer
+            $current_oil_of_customer = $this->oilRepo->findOneActive($fuel_customer->fuel_id);
+
+            # Compute change_percent
+            $change_percent = ($oil->price - $current_oil_of_customer->price) / ($current_oil_of_customer->price * 100);
+
+            # Nếu KH không vượt qua limit_oil -> bỏ qua
+            if ($customer->limit_oil / 100 > abs($change_percent) * 100) continue;
+
+            # Find Postages of this customer
+            $postages = $this->postageRepo->findAllActiveByFieldName('customer_id', $customer->id);
+
+            # Nếu KH chưa có cước phí -> bỏ qua
+            if ($postages->count() == 0) continue;
+
+            # Nếu cước phí chưa được cập nhật apply_date -> Báo lỗi
+            $check_null = $postages->where('apply_date', null);
+            if ($check_null->count() > 0)
+                return false;
+
+            # Lấy cước phí theo ngày áp dụng giá dầu
+            $max_date = $postages->where('apply_date', '<=', $oil->apply_date)->max('apply_date');
+            $postages = $postages->where('apply_date', $max_date);
+            foreach ($postages as $postage) {
+                $formulas = $this->formulaRepo->findAllActiveByFieldName('postage_id', $postage->id);
+
+                # Nếu trong công thức có Giá dầu -> bỏ qua
+                $check_oil = $formulas->where('rule', 'OIL');
+                if (count($check_oil) > 0) continue;
+
+                # Insert Postage (apply_date = null)
+                $unit_price = $postage->unit_price * abs($change_percent) * $customer->limit_oil / 10000;
+                if ($change_percent > 0) {
+                    $unit_price = $postage->unit_price + $unit_price;
+                    $word       = 'Tăng';
+                } else {
+                    $unit_price = $postage->unit_price - $unit_price;
+                    $word       = 'Giảm';
+                }
+                $i_postage   = [
+                    'code'             => $this->postageRepo->generateCode('POSTAGE'),
+                    'unit_price'       => $unit_price,
+                    'delivery_percent' => $postage->delivery_percent,
+                    'apply_date'       => null,
+                    'change_by_fuel'   => true,
+                    'note'             => "$word cước vận chuyển và giao xe do giá dầu $word từ " . number_format($current_oil_of_customer->price) . " đến " . number_format($oil->price),
+                    'created_by'       => $oil->created_by,
+                    'updated_by'       => 0,
+                    'created_date'     => $oil->created_date,
+                    'updated_date'     => null,
+                    'active'           => true,
+                    'customer_id'      => $customer->id,
+                    'unit_id'          => $postage->unit_id,
+                    'type'             => 'OIL',
+                    'fuel_id'          => $oil->id
+                ];
+                $postage_new = $this->postageRepo->createOne($i_postage);
+
+                # Insert Formulas
+                foreach ($formulas as $key => $formula) {
+
+                    $i_formula = [
+                        'code'         => $this->formulaRepo->generateCode('FORMULA'),
+                        'rule'         => $formula->rule,
+                        'name'         => $formula->name,
+                        'value1'       => $formula->value1,
+                        'value2'       => $formula->value2,
+                        'index'        => ++$key,
+                        'created_by'   => $oil->created_by,
+                        'updated_by'   => 0,
+                        'created_date' => $oil->created_date,
+                        'updated_date' => null,
+                        'active'       => true,
+                        'postage_id'   => $postage_new->id
+                    ];
+                    $this->formulaRepo->createOne($i_formula);
+
+                } // END FOREACH Formula
+
+            } // END FOREACH Postage
+            # Deactivation Fuel Customer
+            $this->fuelCustomerRepo->destroyOne($fuel_customer->id);
+
+            # Insert Fuel Customer
+            $i_fuel_customer = [
+                'type'         => 'OIL',
+                'fuel_id'      => $oil->id,
+                'customer_id'  => $customer->id,
+                'created_by'   => $oil->created_by,
+                'updated_by'   => 0,
+                'created_date' => $oil->created_date,
+                'updated_date' => null,
+                'active'       => true
+            ];
+            $this->fuelCustomerRepo->createOne($i_fuel_customer);
+
+        } // END FOREACH Fuel Customer
+        return true;
     }
 
 }
