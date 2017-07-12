@@ -291,11 +291,8 @@ namespace App{
  *
  * @property int $id
  * @property string $type
- * @property int $fuel_id
+ * @property int $fuel_id Giá dầu làm mốc của khách hàng
  * @property int $customer_id
- * @property float $price Giá dầu làm mốc của khách hàng
- * @property string $apply_date
- * @property string|null $note Ghi chú
  * @property int $created_by Người tạo
  * @property int $updated_by Người sửa
  * @property string $created_date Ngày tạo
@@ -304,15 +301,12 @@ namespace App{
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereApplyDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereCreatedDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereFuelId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FuelCustomer whereUpdatedBy($value)

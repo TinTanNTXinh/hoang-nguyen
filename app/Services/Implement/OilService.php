@@ -102,18 +102,24 @@ class OilService implements OilServiceInterface
             foreach ($fuel_customers as $fuel_customer) {
                 # Find Customer
                 $customer = $this->customerRepo->findOneActive($fuel_customer->customer_id);
+
                 # Nếu i_apply_date > KH.finish_date -> Bỏ qua
                 $compare = DateTimeHelper::compareDateTime($data['apply_date'], DateTimeHelper::$clientFormatDateTime, $customer->finish_date, 'Y-m-d H:i:s');
                 if ($compare == -1) continue;
+
                 # Find current Fuel of Customer
                 $current_oil_of_customer = $this->oilRepo->findOneActive($fuel_customer->fuel_id);
+
                 # Compute change_percent
                 $change_percent = ($one->price - $current_oil_of_customer->price) / ($current_oil_of_customer->price * 100);
+
                 # Nếu KH không vượt qua limit_oil -> bỏ qua
                 if ($customer->limit_oil / 100 > abs($change_percent) * 100) continue;
                 $postages = $this->postageRepo->findAllActiveByFieldName('customer_id', $customer->id);
+
                 # Nếu KH chưa có cước phí -> bỏ qua
                 if ($postages->count() == 0) continue;
+
                 # Nếu cước phí chưa được cập nhật apply_date -> Báo lỗi
                 $check_null = $postages->where('apply_date', null);
                 if ($check_null->count() > 0) {
@@ -121,13 +127,17 @@ class OilService implements OilServiceInterface
                     DB::rollback();
                     return $result;
                 }
+
+                # Lấy cước phí theo ngày áp dụng giá dầu
                 $max_date = $postages->where('apply_date', '<=', $one->apply_date)->max('apply_date');
                 $postages = $postages->where('apply_date', $max_date);
                 foreach ($postages as $postage) {
                     $formulas = $this->formulaRepo->findAllActiveByFieldName('postage_id', $postage->id);
+
                     # Nếu trong công thức có Giá dầu -> bỏ qua
                     $check_oil = $formulas->where('rule', 'OIL');
                     if (count($check_oil) > 0) continue;
+
                     # Insert Postage (apply_date = null)
                     $unit_price = $postage->unit_price * abs($change_percent) * $customer->limit_oil / 10000;
                     if ($change_percent > 0) {
@@ -137,7 +147,6 @@ class OilService implements OilServiceInterface
                         $unit_price = $postage->unit_price - $unit_price;
                         $word       = 'Giảm';
                     }
-
                     $i_postage   = [
                         'code'             => $this->postageRepo->generateCode('POSTAGE'),
                         'unit_price'       => $unit_price,
@@ -187,9 +196,6 @@ class OilService implements OilServiceInterface
                     'type'         => 'OIL',
                     'fuel_id'      => $one->id,
                     'customer_id'  => $customer->id,
-                    'price'        => $one->price,
-                    'apply_date'   => $one->apply_date,
-                    'note'         => '',
                     'created_by'   => $one->created_by,
                     'updated_by'   => 0,
                     'created_date' => $one->created_date,

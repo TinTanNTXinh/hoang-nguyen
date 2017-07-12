@@ -124,6 +124,17 @@
                               </div>
                             </div>
 
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label>Giá dầu và ngày áp dụng</label>
+                                <select [(ngModel)]="fuel_customer.fuel_id" name="fuel_id" class="form-control m-b">
+                                  <option *ngFor="let oil of oils" value="{{ oil.id }}">
+                                    {{ oil.fc_price + ' - ' + oil.fd_apply_date}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
                             <div class="col-sm-6">
                               <label>Ngày kết thúc</label>
                               <datetime [(ngModel)]="finish_date" name="finish_date"
@@ -140,8 +151,8 @@
                             </div>
                             <strong>Chú ý:</strong>
                             <ul>
-                              <li>Đây là thời hạn hợp đồng.</li>
-                              <li>Nếu giá dầu thay đổi sau thời gian này, sẽ không tạo cước phí mới.</li>
+                              <li><em>Đây là thời hạn hợp đồng.</em></li>
+                              <li><em>Nếu giá dầu thay đổi sau thời gian này, sẽ không tạo cước phí mới.</em></li>
                             </ul>
                           </div>
                           <div class="col-md-6">

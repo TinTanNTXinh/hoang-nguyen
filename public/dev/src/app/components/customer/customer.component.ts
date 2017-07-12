@@ -17,6 +17,9 @@ export class CustomerComponent implements OnInit
     public customers: any[] = [];
     public customers_search: any[] = [];
     public customer: any;
+    public fuel_customer: any;
+    public fuel_customers: any[] = [];
+    public oils: any[] = [];
     public customer_types: any[] = [];
     public finish_date: Date = new Date();
     public finish_time: Date = new Date();
@@ -89,6 +92,11 @@ export class CustomerComponent implements OnInit
             fd_finish_date: {
                 title: 'Ngày kết thúc',
                 date_type: 'DATETIME'
+            },
+            fc_fuel_price: {
+                title: 'Giá dầu',
+                date_type: 'NUMBER',
+                prop_name: 'fuel_price'
             }
         };
 
@@ -119,6 +127,8 @@ export class CustomerComponent implements OnInit
         this.customers_search = arr_data['customers'];
 
         this.customer_types = arr_data['customer_types'];
+        this.fuel_customers = arr_data['fuel_customers'];
+        this.oils = arr_data['oils'];
     }
 
     refreshData(): void {
@@ -135,6 +145,7 @@ export class CustomerComponent implements OnInit
     /** ===== ICRUD ===== **/
     loadOne(id: number): void {
         this.customer = this.customers.find(o => o.id == id);
+        this.fuel_customer = this.fuel_customers.find(o => o.customer_id == id && o.active == true);
 
         // set finish_date
         this.finish_date = new Date(this.customer.finish_date);
@@ -154,6 +165,11 @@ export class CustomerComponent implements OnInit
             note: '',
             customer_type_id: 1
         };
+
+        this.fuel_customer = {
+            type: 'OIL',
+            fuel_id: 0
+        }
     }
 
     addOne(): void {
@@ -161,7 +177,12 @@ export class CustomerComponent implements OnInit
 
         this.setDateTimeToCustomer();
 
-        this.httpClientService.post(this.prefix_url, {"customer": this.customer}).subscribe(
+        let data = {
+            customer: this.customer,
+            fuel_customer: this.fuel_customer
+        };
+
+        this.httpClientService.post(this.prefix_url, {"customer": data}).subscribe(
             (success: any) => {
                 this.reloadData(success);
                 this.clearOne();
@@ -180,7 +201,12 @@ export class CustomerComponent implements OnInit
 
         this.setDateTimeToCustomer();
 
-        this.httpClientService.put(this.prefix_url, {"customer": this.customer}).subscribe(
+        let data = {
+            customer: this.customer,
+            fuel_customer: this.fuel_customer
+        };
+
+        this.httpClientService.put(this.prefix_url, {"customer": data}).subscribe(
             (success: any) => {
                 this.reloadData(success);
                 this.clearOne();
@@ -230,6 +256,10 @@ export class CustomerComponent implements OnInit
         if (this.customer.fullname == '') {
             flag = false;
             this.toastrHelperService.showToastr('warning', `Tên  ${this.title} không được để trống!`);
+        }
+        if (this.fuel_customer.fuel_id == 0) {
+            flag = false;
+            this.toastrHelperService.showToastr('warning', `Giá dầu ${this.title} không được để trống!`);
         }
         return flag;
     }

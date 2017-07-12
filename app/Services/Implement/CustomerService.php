@@ -47,10 +47,14 @@ class CustomerService implements CustomerServiceInterface
         $all = $this->customerRepo->findAllActiveSkeleton();
 
         $customer_types = $this->customerTypeRepo->findAllActive();
+        $fuel_customers = $this->fuelCustomerRepo->findAllActive();
+        $oils           = $this->oilRepo->findAllActiveSkeleton();
 
         return [
             'customers'      => $all,
-            'customer_types' => $customer_types
+            'customer_types' => $customer_types,
+            'fuel_customers' => $fuel_customers,
+            'oils'           => $oils
         ];
     }
 
@@ -74,26 +78,29 @@ class CustomerService implements CustomerServiceInterface
             'errors' => []
         ];
 
+        $customer      = $data['customer'];
+        $fuel_customer = $data['fuel_customer'];
+
         try {
             DB::beginTransaction();
 
             $i_one = [
                 'code'             => $this->customerRepo->generateCode('CUSTOMER'),
-                'tax_code'         => $data['tax_code'],
-                'fullname'         => $data['fullname'],
-                'address'          => $data['address'],
-                'phone'            => $data['phone'],
-                'email'            => $data['email'],
-                'limit_oil'        => $data['limit_oil'],
-                'oil_per_postage'  => $data['oil_per_postage'],
-                'finish_date'      => DateTimeHelper::toStringDateTimeClientForDB($data['finish_date']),
-                'note'             => $data['note'],
+                'tax_code'         => $customer['tax_code'],
+                'fullname'         => $customer['fullname'],
+                'address'          => $customer['address'],
+                'phone'            => $customer['phone'],
+                'email'            => $customer['email'],
+                'limit_oil'        => $customer['limit_oil'],
+                'oil_per_postage'  => $customer['oil_per_postage'],
+                'finish_date'      => DateTimeHelper::toStringDateTimeClientForDB($customer['finish_date']),
+                'note'             => $customer['note'],
                 'created_by'       => $this->user->id,
                 'updated_by'       => 0,
                 'created_date'     => date('Y-m-d H:i:s'),
                 'updated_date'     => null,
                 'active'           => true,
-                'customer_type_id' => $data['customer_type_id']
+                'customer_type_id' => $customer['customer_type_id']
             ];
 
             $one = $this->customerRepo->createOne($i_one);
@@ -104,15 +111,10 @@ class CustomerService implements CustomerServiceInterface
             }
 
             // Insert Fuel Customer
-            $oil = $this->oilRepo->findOneActiveByApplyDate();
-
             $i_fuel_customer = [
                 'type'         => 'OIL',
-                'fuel_id'      => $oil->id,
+                'fuel_id'      => $fuel_customer['fuel_id'],
                 'customer_id'  => $one->id,
-                'price'        => $oil->price,
-                'apply_date'   => $oil->apply_date,
-                'note'         => '',
                 'created_by'   => $one->created_by,
                 'updated_by'   => 0,
                 'created_date' => $one->created_date,
@@ -147,30 +149,55 @@ class CustomerService implements CustomerServiceInterface
             'errors' => []
         ];
 
+        $customer      = $data['customer'];
+        $fuel_customer = $data['fuel_customer'];
+
         try {
             DB::beginTransaction();
 
-            $one = $this->customerRepo->findOneActive($data['id']);
+            $one = $this->customerRepo->findOneActive($customer['id']);
 
             $i_one = [
-                'tax_code'         => $data['tax_code'],
-                'fullname'         => $data['fullname'],
-                'address'          => $data['address'],
-                'phone'            => $data['phone'],
-                'email'            => $data['email'],
-                'limit_oil'        => $data['limit_oil'],
-                'oil_per_postage'  => $data['oil_per_postage'],
-                'finish_date'      => DateTimeHelper::toStringDateTimeClientForDB($data['finish_date']),
-                'note'             => $data['note'],
+                'tax_code'         => $customer['tax_code'],
+                'fullname'         => $customer['fullname'],
+                'address'          => $customer['address'],
+                'phone'            => $customer['phone'],
+                'email'            => $customer['email'],
+                'limit_oil'        => $customer['limit_oil'],
+                'oil_per_postage'  => $customer['oil_per_postage'],
+                'finish_date'      => DateTimeHelper::toStringDateTimeClientForDB($customer['finish_date']),
+                'note'             => $customer['note'],
                 'updated_by'       => $this->user->id,
                 'updated_date'     => date('Y-m-d H:i:s'),
                 'active'           => true,
-                'customer_type_id' => $data['customer_type_id']
+                'customer_type_id' => $customer['customer_type_id']
             ];
 
             $one = $this->customerRepo->updateOne($one->id, $i_one);
 
             if (!$one) {
+                DB::rollback();
+                return $result;
+            }
+
+            // Deactivate Fuel Customer
+            $this->fuelCustomerRepo->deleteByCustomerId($one->id);
+
+            // Insert Fuel Customer
+            $i_fuel_customer = [
+                'type'         => 'OIL',
+                'fuel_id'      => $fuel_customer['fuel_id'],
+                'customer_id'  => $one->id,
+                'created_by'   => $one->created_by,
+                'updated_by'   => 0,
+                'created_date' => $one->created_date,
+                'updated_date' => null,
+                'active'       => true
+            ];
+
+            $fuel_customer = $this->fuelCustomerRepo->createOne($i_fuel_customer);
+
+            if (!$fuel_customer) {
                 DB::rollback();
                 return $result;
             }

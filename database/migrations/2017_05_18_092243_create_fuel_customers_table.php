@@ -16,11 +16,8 @@ class CreateFuelCustomersTable extends Migration
         Schema::create('fuel_customers', function (Blueprint $table) {
             $table->increments('id');
             $table->enum('type', ['OIL', 'LUBE']);
-            $table->integer('fuel_id')->unsigned();
+            $table->integer('fuel_id')->unsigned()->comment('Giá dầu làm mốc của khách hàng');
             $table->integer('customer_id')->unsigned();
-            $table->decimal('price', 18, 0)->comment('Giá dầu làm mốc của khách hàng');
-            $table->dateTime('apply_date');
-            $table->text('note')->nullable()->comment('Ghi chú');
             $table->integer('created_by')->default(0)->unsigned()->comment('Người tạo');
             $table->integer('updated_by')->default(0)->unsigned()->comment('Người sửa');
             $table->dateTime('created_date')->default(date('Y-m-d H:i:s'))->comment('Ngày tạo');
