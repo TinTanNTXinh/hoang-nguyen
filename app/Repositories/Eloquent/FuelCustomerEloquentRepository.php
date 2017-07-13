@@ -29,4 +29,13 @@ class FuelCustomerEloquentRepository extends BaseEloquentRepository implements F
             ->where('customer_id', $customer_id)
             ->update(['active' => false]);
     }
+
+    public function findOneActiveByCustomerId($customer_id)
+    {
+        return $this->getModel()
+            ->whereActive(true)
+            ->where('type', 'OIL')
+            ->where('customer_id', $customer_id)
+            ->first();
+    }
 }
