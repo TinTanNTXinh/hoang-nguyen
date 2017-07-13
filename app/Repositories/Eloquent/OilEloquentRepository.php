@@ -54,6 +54,7 @@ class OilEloquentRepository extends BaseEloquentRepository implements OilReposit
             ->whereActive(true)
             ->where('type', 'OIL')
             ->where('apply_date', $operator, $i_apply_date)
+            ->orderBy('apply_date', 'asc')
             ->get();
 
         return $oils;

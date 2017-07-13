@@ -163,9 +163,7 @@ export class OilComponent implements OnInit
                 this.toastrHelperService.showToastr('success', 'Thêm thành công!');
             },
             (error: any) => {
-                for (let err of error.json()['msg']) {
-                    this.toastrHelperService.showToastr('error', err);
-                }
+                this.toastrHelperService.showToastrErrors(error.json());
             }
         );
     }

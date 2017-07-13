@@ -101,6 +101,7 @@ class OilService implements OilServiceInterface
             # Insert Postage, Formula, FuelCustomer
             $flag = $this->addPostageByOil($one);
             if (!$flag) {
+                array_push($result['errors'], 'Tồn tại cước phí chưa cập nhật ngày áp dụng.');
                 DB::rollBack();
                 return $result;
             }
