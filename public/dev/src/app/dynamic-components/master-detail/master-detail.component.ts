@@ -182,7 +182,7 @@ export class MasterDetailComponent implements OnInit {
                     this.onClickedDetail.emit({index: index, mode: mode, data: data});
 
                     if(this.action_detail[mode].show_modal)
-                        this.domHelperService.getElementById('btn-show-modal').click();
+                        this.domHelperService.toggleModal('modal-confirm');
                 }
                 else {
                     if(this.action_detail[mode].force_selected_row)
