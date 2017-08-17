@@ -405,8 +405,8 @@ class PostageService implements PostageServiceInterface
         $postages = $this->postageRepo->findAllActiveSkeleton()->where('customer_id', $customer_id)->values();
 
         $header_detail = [
-            'unit_name'        => ['title' => 'ĐVT', 'data_type' => 'TEXT'],
             'fc_unit_price'    => ['title' => 'Đơn giá', 'data_type' => 'NUMBER', 'prop_name' => 'unit_price'],
+            'unit_name'        => ['title' => 'ĐVT', 'data_type' => 'TEXT'],
             'fd_apply_date'    => ['title' => 'Ngày áp dụng', 'data_type' => 'DATETIME', 'prop_name' => 'apply_date'],
             'delivery_percent' => ['title' => 'Giao xe', 'data_type' => 'NUMBER'],
             'fc_fuel_price'    => ['title' => 'Giá dầu', 'data_type' => 'NUMBER', 'prop_name' => 'fuel_price'],
