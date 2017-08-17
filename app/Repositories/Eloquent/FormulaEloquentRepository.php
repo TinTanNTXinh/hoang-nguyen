@@ -29,14 +29,15 @@ class FormulaEloquentRepository extends BaseEloquentRepository implements Formul
         if (!isset($i_transport_date))
             $i_transport_date = DateTimeHelper::addTimeForDate(date('Y-m-d'), 'max');
 
-        $formulas = $this->getModel()
-            ->where('formulas.active', true)
-            ->leftJoin('postages', 'postages.id', '=', 'formulas.postage_id')
-            ->where('postages.customer_id', $i_customer_id)
-            ->where('postages.apply_date', '<=', $i_transport_date);
-
         $founds = [];
         foreach ($i_formulas as $key => $i_formula) {
+            // INIT QUERY
+            $formulas = $this->getModel()
+                ->where('formulas.active', true)
+                ->leftJoin('postages', 'postages.id', '=', 'formulas.postage_id')
+                ->where('postages.customer_id', $i_customer_id)
+                ->where('postages.apply_date', '<=', $i_transport_date);
+
             $found = null;
             switch ($i_formula->rule) {
                 case 'SINGLE':
@@ -55,7 +56,7 @@ class FormulaEloquentRepository extends BaseEloquentRepository implements Formul
                         ->where('formulas.rule', $i_formula->rule)
                         ->where('formulas.name', $i_formula->name)
                         ->where(DB::raw('CAST(formulas.value1 AS DECIMAL(18, 2))'), '<=', floatval($i_formula->value1))
-                        ->where(DB::raw('CAST(formulas.value2 AS DECIMAL(18, 2))'), '<=', floatval($i_formula->value2))
+                        ->where(DB::raw('CAST(formulas.value2 AS DECIMAL(18, 2))'), '>=', floatval($i_formula->value1))
                         ->pluck('formulas.postage_id')
                         ->toArray();
                     array_push($founds, $found);
@@ -75,11 +76,31 @@ class FormulaEloquentRepository extends BaseEloquentRepository implements Formul
             }
         }
 
-        $postage_id         = 0;
-        $result_postage_ids = collect($founds)->collapse();
-        if (count($result_postage_ids) == count($i_formulas) && count($result_postage_ids->unique()) == 1) {
-            $postage_id = $result_postage_ids->unique()->first();
+        $postage_id = 0;
+
+        ## METHOD 1:
+//        $result_postage_ids = collect($founds)->collapse();
+//        if (count($result_postage_ids) == count($i_formulas) && count($result_postage_ids->unique()) == 1) {
+//            $postage_id = $result_postage_ids->unique()->first();
+//        }
+
+        ## METHOD 2: GIAO NHAU
+        $intersected = [];
+        for ($i = 0; $i < count($founds) - 1; $i++) {
+            $intersected = array_intersect($founds[$i], $founds[$i + 1]);
         }
+
+        // Kiểm tra số lượng công thức của mỗi cước phí
+        foreach ($intersected as $check_postage_id) {
+            $check_formulas = $this->getModel()
+                ->where('formulas.active', true)
+                ->where('formulas.postage_id', $check_postage_id)
+                ->get();
+            if ($check_formulas->count() == count($i_formulas)) {
+                $postage_id = $check_postage_id;
+            }
+        }
+
         return $postage_id;
     }
 }
